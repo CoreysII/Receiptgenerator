@@ -74,27 +74,27 @@
             const time = new Date().toLocaleTimeString();
 
             try {
+                console.log("Generating PDF...");
                 const doc = new jsPDF();
 
                 // Add US Bank and AMEX Logos
                 const usBankLogoUrl = 'https://fabrikbrands.com/wp-content/uploads/US-Bancorp-Logo-4.png';
                 const amexLogoUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/1200px-American_Express_logo_%282018%29.svg.png';
 
-                const usBankLogo = await fetch(usBankLogoUrl).then(res => res.blob()).then(blob => {
+                const loadImage = async (url) => {
+                    const response = await fetch(url);
+                    const blob = await response.blob();
                     return new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = () => resolve(reader.result);
                         reader.readAsDataURL(blob);
                     });
-                });
+                };
 
-                const amexLogo = await fetch(amexLogoUrl).then(res => res.blob()).then(blob => {
-                    return new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
-                        reader.readAsDataURL(blob);
-                    });
-                });
+                const usBankLogo = await loadImage(usBankLogoUrl);
+                console.log("US Bank logo loaded successfully.");
+                const amexLogo = await loadImage(amexLogoUrl);
+                console.log("AMEX logo loaded successfully.");
 
                 doc.addImage(usBankLogo, 'PNG', 10, 10, 50, 20);
                 doc.addImage(amexLogo, 'PNG', 150, 10, 50, 20);
