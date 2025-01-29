@@ -70,16 +70,30 @@
             const time = new Date().toLocaleTimeString();
 
             const doc = new jsPDF();
-            
-            const usBankLogo = await fetch('path/to/us-bank-logo.png').then(res => res.blob());
-            const amexLogo = await fetch('path/to/amex-logo.png').then(res => res.blob());
-            
-            const usBankLogoUrl = URL.createObjectURL(usBankLogo);
-            const amexLogoUrl = URL.createObjectURL(amexLogo);
-            
-            doc.addImage(usBankLogoUrl, 'PNG', 10, 10, 50, 20);
-            doc.addImage(amexLogoUrl, 'PNG', 150, 10, 50, 20);
-            
+
+            // Add US Bank and AMEX Logos
+            const usBankLogoUrl = 'https://fabrikbrands.com/wp-content/uploads/US-Bancorp-Logo-4.png';
+            const amexLogoUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/1200px-American_Express_logo_%282018%29.svg.png';
+
+            const usBankLogo = await fetch(usBankLogoUrl).then(res => res.blob()).then(blob => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                });
+            });
+
+            const amexLogo = await fetch(amexLogoUrl).then(res => res.blob()).then(blob => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                });
+            });
+
+            doc.addImage(usBankLogo, 'PNG', 10, 10, 50, 20);
+            doc.addImage(amexLogo, 'PNG', 150, 10, 50, 20);
+
             doc.setFontSize(22);
             doc.text('Payment Receipt', 20, 50);
             doc.setFontSize(16);
