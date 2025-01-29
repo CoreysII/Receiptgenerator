@@ -21,6 +21,7 @@
         }
         h1 {
             margin-bottom: 20px;
+            color: #003366; /* Dark blue */
         }
         input {
             width: 100%;
@@ -31,14 +32,14 @@
         }
         button {
             padding: 10px 20px;
-            background-color: #28a745;
+            background-color: #003366; /* Dark blue */
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #002244; /* Darker blue */
         }
     </style>
 </head>
@@ -72,44 +73,53 @@
             const date = new Date().toLocaleDateString();
             const time = new Date().toLocaleTimeString();
 
-            const doc = new jsPDF();
+            try {
+                const doc = new jsPDF();
 
-            // Add US Bank and AMEX Logos
-            const usBankLogoUrl = 'https://fabrikbrands.com/wp-content/uploads/US-Bancorp-Logo-4.png';
-            const amexLogoUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/1200px-American_Express_logo_%282018%29.svg.png';
+                // Add US Bank and AMEX Logos
+                const usBankLogoUrl = 'https://fabrikbrands.com/wp-content/uploads/US-Bancorp-Logo-4.png';
+                const amexLogoUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/1200px-American_Express_logo_%282018%29.svg.png';
 
-            const usBankLogo = await fetch(usBankLogoUrl).then(res => res.blob()).then(blob => {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.readAsDataURL(blob);
+                const usBankLogo = await fetch(usBankLogoUrl).then(res => res.blob()).then(blob => {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.readAsDataURL(blob);
+                    });
                 });
-            });
 
-            const amexLogo = await fetch(amexLogoUrl).then(res => res.blob()).then(blob => {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.readAsDataURL(blob);
+                const amexLogo = await fetch(amexLogoUrl).then(res => res.blob()).then(blob => {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.readAsDataURL(blob);
+                    });
                 });
-            });
 
-            doc.addImage(usBankLogo, 'PNG', 10, 10, 50, 20);
-            doc.addImage(amexLogo, 'PNG', 150, 10, 50, 20);
+                doc.addImage(usBankLogo, 'PNG', 10, 10, 50, 20);
+                doc.addImage(amexLogo, 'PNG', 150, 10, 50, 20);
 
-            doc.setFontSize(22);
-            doc.text('Payment Receipt', 20, 50);
-            doc.setFontSize(16);
-            doc.text(`Date: ${date}`, 20, 70);
-            doc.text(`Time: ${time}`, 20, 80);
-            doc.text(`Name: ${name}`, 20, 100);
-            doc.text(`Email: ${email}`, 20, 110);
-            doc.text(`Account Type: ${accountType}`, 20, 120);
-            doc.text(`Account Name: ${accountName}`, 20, 130);
-            doc.text(`Amount Paid: $${amount}`, 20, 150);
-            doc.text('Thank you for your payment!', 20, 170);
+                doc.setFontSize(22);
+                doc.setTextColor('#003366'); // Dark Blue
+                doc.text('Payment Receipt', 20, 50);
+                doc.setFontSize(16);
+                doc.setTextColor('#000000'); // Black
+                doc.text(`Date: ${date}`, 20, 70);
+                doc.text(`Time: ${time}`, 20, 80);
+                doc.text(`Name: ${name}`, 20, 100);
+                doc.text(`Email: ${email}`, 20, 110);
+                doc.text(`Account Type: ${accountType}`, 20, 120);
+                doc.text(`Account Name: ${accountName}`, 20, 130);
+                doc.setTextColor('#003366'); // Dark Blue
+                doc.text(`Amount Paid: $${amount}`, 20, 150);
+                doc.setTextColor('#FF0000'); // Red
+                doc.text('Thank you for your payment!', 20, 170);
 
-            doc.save('payment-receipt.pdf');
+                doc.save('payment-receipt.pdf');
+                console.log("PDF generated successfully.");
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+            }
         });
     </script>
 </body>
